@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 export function useFetchUserApi(userId) {
-  console.log(userId);
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
@@ -15,10 +14,8 @@ export function useFetchUserApi(userId) {
           signal: controller.signal,
         });
         const data = await response.json();
-        console.log(response, data);
         setLoading(true);
         setError(undefined);
-        console.log(data);
         setUserData(data);
       } catch (error) {
         setLoading(false);

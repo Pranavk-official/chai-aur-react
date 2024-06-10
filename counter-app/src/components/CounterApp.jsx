@@ -6,7 +6,6 @@ export function CounterApp() {
   const [count, setCount] = useState(1);
   const minCount = 1,
     maxCount = 10;
-  console.log(count);
   const { user, loading } = useFetchUserApi(count);
 
   // Validate initial count
