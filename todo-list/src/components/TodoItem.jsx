@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useTodo } from "../contexts";
+import PropTypes from "prop-types";
 
-function TodoItem({ todo }) {
+function TodoItem({ todo, index }) {
+  console.log(todo, index);
   const [isTodoEditable, setIsTodoEditable] = useState(false);
   const [todoMsg, setTodoMsg] = useState(todo.todo);
-  const { editToDo, deleteToDo, toggleComplete } = useTodo();
+  const { editToDo, deleteToDo, toggleComplete, moveUp, moveDown } = useTodo();
 
   const editTodo = () => {
     editToDo(todo.id, { ...todo, todo: todoMsg });
@@ -13,6 +15,13 @@ function TodoItem({ todo }) {
 
   const toggleCompleted = () => {
     toggleComplete(todo.id);
+  };
+
+  const moveTodoUp = () => {
+    moveUp(index);
+  };
+  const moveTodoDown = () => {
+    moveDown(index);
   };
 
   return (
@@ -25,15 +34,26 @@ function TodoItem({ todo }) {
         type="checkbox"
         className="cursor-pointer"
         checked={todo.completed}
-        onChange={toggleCompleted}
+        onChange={() => {
+          if (!isTodoEditable) {
+            toggleCompleted();
+          }
+        }}
       />
       <input
         type="text"
         className={`border outline-none w-full bg-transparent rounded-lg ${
-          isTodoEditable ? "border-black/10 px-2" : "border-transparent"
+          isTodoEditable
+            ? "border-black/10 px-2 bg-slate-200"
+            : "border-transparent"
         } ${todo.completed ? "line-through" : ""}`}
         value={todoMsg}
         onChange={(e) => setTodoMsg(e.target.value)}
+        onClick={() => {
+          if (!isTodoEditable) {
+            toggleCompleted();
+          }
+        }}
         readOnly={!isTodoEditable}
       />
       {/* Edit, Save Button */}
@@ -51,6 +71,19 @@ function TodoItem({ todo }) {
         {isTodoEditable ? "📁" : "✏️"}
       </button>
       {/* Delete Todo Button */}
+
+      <button
+        className="inline-flex w-8 h-8 rounded-lg text-sm border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100 shrink-0"
+        onClick={() => moveTodoUp(index)}
+      >
+        👆
+      </button>
+      <button
+        className="inline-flex w-8 h-8 rounded-lg text-sm border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100 shrink-0"
+        onClick={() => moveTodoDown(index)}
+      >
+        👇
+      </button>
       <button
         className="inline-flex w-8 h-8 rounded-lg text-sm border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100 shrink-0"
         onClick={() => deleteToDo(todo.id)}
@@ -60,5 +93,14 @@ function TodoItem({ todo }) {
     </div>
   );
 }
+
+TodoItem.propTypes = {
+  index: PropTypes.number,
+  todo: PropTypes.shape({
+    id: PropTypes.any,
+    todo: PropTypes.string,
+    completed: PropTypes.bool,
+  }),
+};
 
 export default TodoItem;

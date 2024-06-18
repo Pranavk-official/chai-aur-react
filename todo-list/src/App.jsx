@@ -27,6 +27,31 @@ function App() {
     );
   };
 
+  const moveUp = (index) => {
+    if (index > 0) {
+      const updatedTodos = [...todos];
+      [updatedTodos[index], updatedTodos[index - 1]] = [
+        updatedTodos[index - 1],
+        updatedTodos[index],
+      ];
+      setTodos(updatedTodos);
+    } else {
+      return;
+    }
+  };
+  const moveDown = (index) => {
+    if (index < todos.length - 1) {
+      const updatedTodos = [...todos];
+      [updatedTodos[index], updatedTodos[index + 1]] = [
+        updatedTodos[index + 1],
+        updatedTodos[index],
+      ];
+      setTodos(updatedTodos);
+    } else {
+      return;
+    }
+  };
+
   // Local Storage
 
   useEffect(() => {
@@ -43,7 +68,15 @@ function App() {
 
   return (
     <TodoProvider
-      value={{ todos, addToDo, editToDo, deleteToDo, toggleComplete }}
+      value={{
+        todos,
+        addToDo,
+        editToDo,
+        deleteToDo,
+        toggleComplete,
+        moveUp,
+        moveDown,
+      }}
     >
       <div className="bg-zinc-900 min-h-screen py-8">
         <div className="w-full max-w-2xl mx-auto shadow-md rounded-lg px-4 py-3 text-white">
@@ -56,9 +89,9 @@ function App() {
           </div>
           <div className="flex flex-wrap gap-y-3">
             {/*Loop and Add TodoItem here */}
-            {todos.map((todo) => (
+            {todos.map((todo, index) => (
               <div key={todo.id} className="w-full">
-                <TodoItem todo={todo} />
+                <TodoItem todo={todo} index={index} />
               </div>
             ))}
           </div>
